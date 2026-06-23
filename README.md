@@ -1,96 +1,86 @@
 # Claude Status Bar
 
-A tiny macOS menu bar app that shows **Claude Code's live status**: an animated Claude spark while it's thinking or running a tool, a yellow dot when it's awaiting your permission, and the elapsed time of the current turn. It sits next to your battery/clock and stays out of the way, no window, no dock icon, no usage dashboards.
+Forked from [m1ckc3s/claude-status-bar](https://github.com/m1ckc3s/claude-status-bar). The original is great. I forked it because the README listed VS Code and Cursor as unsupported, and I wasn't convinced that was actually true.
 
-> Built so you can tab away during a long "thinking" stretch and still see, at a glance, whether Claude is working, waiting on you, or done.
+It wasn't. The Claude Code extension fires the exact same hooks via `~/.claude/settings.json`. The menu bar works fine in Cursor. I checked the extension source, confirmed sessions were being tracked, tested it live, and updated the docs. That's most of what changed here.
+
+If you're running Claude Code inside Cursor or VS Code, this is the version you want.
 
 <img width="1016" height="566" alt="for gif (1)" src="https://github.com/user-attachments/assets/55a7b294-e893-4f73-b16b-b8beef784400" />
 
 <a href="https://github.com/m1ckc3s/claude-status-bar/releases/latest/download/ClaudeStatusBar.dmg"><img src="assets/download.png" alt="Download ClaudeStatusBar.dmg for macOS" width="260"></a>
 
-Signed and notarized. Open it, drag the app to Applications, launch once. See [Install](#install) for details.
+Signed and notarized. Drag to Applications, launch once.
 
 ## What it shows
 
-- **Thinking / working** — the Claude spark animates, with a live `1m 1s` timer.
+- **Thinking / working** — the Claude spark animates with a live `1m 1s` timer.
 - **Running a tool** — a short label (`Editing`, `Reading`, `Running command`, `Using tool`, …).
 - **Awaiting permission** — a paused yellow dot (CLI only, see below).
 - **Idle / done** — rests on the Claude logo.
 
-Two animation styles (pick in the menu): **Claude** (the web "morph" spark) and **Claude Code** (the terminal glyph spinner). Icon color can be **Orange** (Anthropic's `#d97757`) or **System** (adaptive black/white, like your other menu bar icons). The elapsed timer can be toggled off.
+Two animation styles in the menu: **Claude** (the web morph spark) and **Claude Code** (the terminal glyph spinner). Icon color is **Orange** (Anthropic's `#d97757`) or **System** (black/white, matches your other menu bar icons). You can toggle the timer off too.
 
 ## Where it works
-
-This is a **Claude Code** indicator, driven by Claude Code hooks. It tracks:
 
 | Surface | Tracked? |
 |---|---|
 | Claude Code CLI (terminal) | ✅ |
-| Claude Code Desktop — **Code** tab | ✅ |
-| VS Code extension (incl. Cursor) | ✅ |
-| Claude Desktop — **Chat** tab | ❌ |
-| **Cowork** | ❌ |
+| Claude Code Desktop — Code tab | ✅ |
+| VS Code / Cursor extension | ✅ |
+| Claude Desktop — Chat tab | ❌ |
+| Cowork | ❌ |
 | JetBrains extension | ❓ untested |
 
-Chat and Cowork don't use Claude Code's hook system, so the status bar won't update while you're in those. It reflects Claude **Code** activity only.
+Chat and Cowork don't go through the hook system, so those won't work regardless of what fork you're on. The VS Code and Cursor extensions hook into `~/.claude/settings.json` the same way the CLI does, which is why they work and why the original README was wrong to list them as unsupported. JetBrains is probably fine too, I just haven't run it.
 
-The VS Code and Cursor extensions fire the same hooks as the CLI via `~/.claude/settings.json`, so the menu bar updates correctly when you're working inside your editor.
+### One thing about permissions
 
-### Permission detection is CLI-only
-
-The yellow "Awaiting permission" dot appears when Claude Code fires its permission *notification*, which it does in the **CLI**. The **Desktop app** doesn't emit that hook for its in-app permission prompts, so the dot won't show there, the icon just stays on the current tool (e.g. "Writing") while the prompt is open. Everything else (thinking, tools, the open/close lifecycle) works the same in both. And if you run on **auto / bypass mode**, permission prompts never happen anyway, so this is a non-issue.
+The yellow dot only shows in the CLI. The desktop app handles permission prompts inside its own window and doesn't fire the notification hook, so you'll see whatever tool was running last. If you're on auto/bypass mode this never comes up anyway.
 
 ## Requirements
 
 - macOS 12+
-- [Claude Code](https://claude.com/claude-code) (CLI or the Desktop app)
-- Node.js (used by the lightweight hook scripts)
+- [Claude Code](https://claude.com/claude-code) installed
+- Node.js
 
 ## Install
 
-### Option A — DMG (recommended)
+### Option A — DMG
 
-1. Download the latest `ClaudeStatusBar.dmg` from [Releases](../../releases).
-2. Open it and drag **Claude Status Bar** into Applications.
-3. Launch it once. On first launch it wires up the Claude Code hooks for you automatically. (Already had a previous version? You can skip this, just open Claude Code and it updates itself.)
-4. Start a new Claude Code session, the spark appears whenever Claude Code is running.
+1. Download `ClaudeStatusBar.dmg` from [Releases](../../releases).
+2. Drag **Claude Status Bar** into Applications.
+3. Launch it once. It wires the hooks automatically.
+4. Start a Claude session. The spark appears.
 
-> The DMG is signed and notarized, so it opens normally, no Gatekeeper warning, no right-click needed.
-
-### Updating to a new version
-
-1. Download the latest `ClaudeStatusBar.dmg` from [Releases](../../releases).
-2. Open it and drag **Claude Status Bar** into Applications. Finder will say an item with that name already exists and ask what to do, choose **Replace**. You do not need to uninstall the old version first.
-3. Launch it once. On a version change it refreshes its hooks automatically and cleans up anything an older version left behind, so there's no manual step.
-4. Restart Claude Code (or start a new session) so it picks up the refreshed hooks.
+No Gatekeeper warning — it's signed and notarized.
 
 ### Option B — Claude Code plugin
-
-Installs the hooks (status + open/close lifecycle) automatically from inside Claude Code:
 
 ```
 /plugin marketplace add m1ckc3s/claude-status-bar
 /plugin install claude-status-bar@claude-status-bar
 ```
 
-The plugin installs the hooks but not the app itself, so drag **Claude Status Bar** into Applications once (from the DMG). The plugin launches it automatically on session start.
+This gets the hooks in place but not the app itself, so you still need to drag it into Applications from the DMG first. Once that's done the plugin handles launching it.
 
-### Using the Claude Code desktop app? Hide its built-in icon
+### Using the Claude Code desktop app
 
-The desktop app shows its own menu bar icon (the quick-screenshot one). To avoid two icons sitting side by side, open Claude's **Settings → General** and turn that built-in menu bar item off. Claude Status Bar then gives you a single, animated indicator.
+The desktop app has its own menu bar icon (the screenshot shortcut one). If two Claude icons next to each other bothers you, go to **Settings → General** and turn the built-in one off.
 
 ## How it works
 
-Claude Code fires hooks on its lifecycle and tool events. Small scripts write the current status to `~/.claude/statusbar/state.json`; the menu bar app polls that file and renders the spark + label. The `SessionStart` hook launches the app when Claude Code opens (in the terminal, the desktop app, or a new conversation). The app then quits itself once Claude is gone, that is, when the Claude desktop app isn't running and no Claude Code session is active. Active sessions are tracked as one small file each under `~/.claude/statusbar/sessions.d/`, so any working session keeps the bar up.
+Claude Code hooks fire on lifecycle and tool events. Small Node.js scripts write the current status to `~/.claude/statusbar/state.json`. The menu bar app polls that file and updates the icon and label. Each active session gets its own file under `~/.claude/statusbar/sessions.d/` — as long as any of those exist, the app stays up. When there's nothing left to track, it quits itself.
 
-The installer merges its hooks into `~/.claude/settings.json` without touching your existing hooks, and backs the file up first (`settings.json.bak-statusbar`).
+The installer merges its hooks into `~/.claude/settings.json` and backs the file up first (`settings.json.bak-statusbar`), so your existing hooks stay intact.
 
 ## Uninstall
 
 ```bash
-node "/Applications/ClaudeStatusBar.app/Contents/Resources/uninstall.js"   # removes only our hooks
+node "/Applications/ClaudeStatusBar.app/Contents/Resources/uninstall.js"
 ```
-Then drag the app to the Trash.
+
+Then drag the app to the Trash. Run the script first — dragging to Trash alone leaves the hooks behind.
 
 ## Build from source
 
@@ -100,27 +90,23 @@ cd claude-status-bar
 ./build.sh            # builds build/ClaudeStatusBar.app
 ./build.sh --dmg      # also produces build/ClaudeStatusBar.dmg
 ```
-Requires the Xcode Command Line Tools (`xcode-select --install`).
+
+Requires Xcode Command Line Tools (`xcode-select --install`).
 
 ## Troubleshooting
 
-**The icon ran for a few seconds, then disappeared.** That's the app exiting on purpose, not a crash. It's a live indicator for Claude Code, so when no Claude session or desktop app is running it has nothing to show and exits cleanly. Run it with Claude Code open (or start a `claude` session) and it stays. You don't launch the app yourself; the session launches it.
+**The icon appeared, then disappeared.** That's intentional. The app exits when no Claude session is active. Open Claude Code or start a `claude` session and it'll stay up. You don't launch it yourself — the session does.
 
-**The icon doesn't appear at all.**
-- Make sure a Claude session is actually running. Start a new session (or restart Claude Code) and the bar appears automatically.
-- A session that was already running *before* you installed gets picked up once it does something, but starting a fresh session is the reliable way to bring the bar up the first time.
-- Confirm it's running with `pgrep -x ClaudeStatusBar`: a number means it's running (it may just be hidden, see below); no output means it exited because no Claude session is active.
-- If first-launch setup never took, run the installer manually: `node "/Applications/ClaudeStatusBar.app/Contents/Resources/install.js"`
+**Nothing shows up at all.**
+- Start a fresh Claude session. Sessions already running before install get picked up eventually, but a new session is more reliable.
+- Check if it's running: `pgrep -x ClaudeStatusBar`. A number means it's running but probably hidden. No output means it exited.
+- If the first-launch setup didn't take: `node "/Applications/ClaudeStatusBar.app/Contents/Resources/install.js"`
 
-**It's running but I can't see it.** On a Mac with a notch, a crowded menu bar can hide icons behind the notch. Remove some other menu bar items, or use a menu bar manager (Ice, Bartender), to reveal it.
+**Running but not visible.** Notch Mac with a crowded menu bar. Use Ice or Bartender to surface it.
 
-**Uninstalling.** See [Uninstall](#uninstall) above. Dragging the app to the Trash alone leaves the hooks behind, so run the uninstall command first.
+## Not affiliated with Anthropic
 
-## Trademark / not affiliated
-
-This is an unofficial, open-source side project forked from [m1ckc3s/claude-status-bar](https://github.com/m1ckc3s/claude-status-bar). **It is not affiliated with, endorsed by, or sponsored by Anthropic.** "Claude" and the Claude logo are trademarks of Anthropic.
-
-If I'm violating or impeding your trademark, please open an issue or reach out and I'll address it immediately. This is a free side project; I'm not monetizing it.
+This is an unofficial fork of [m1ckc3s/claude-status-bar](https://github.com/m1ckc3s/claude-status-bar), which is itself unofficial. Neither is affiliated with Anthropic. "Claude" is a trademark of Anthropic. If there's a trademark issue, open an issue and I'll sort it out.
 
 ## License
 
