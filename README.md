@@ -1,6 +1,6 @@
 # Claude Status Bar
 
-A macOS menu bar app that shows Claude Code's live status: animated spark while thinking, a label while running a tool, and an elapsed timer. No window, no dock icon.
+A macOS menu bar app that shows Claude Code's live status: animated spark while thinking, a label while running a tool, and an elapsed timer.
 
 Forked from [m1ckc3s/claude-status-bar](https://github.com/m1ckc3s/claude-status-bar). The original marked VS Code and Cursor as unsupported. After checking the extension source and confirming the hooks fire identically via `~/.claude/settings.json`, this fork adds confirmed support for both.
 
@@ -28,11 +28,11 @@ Two animation styles: **Claude** (web morph spark) and **Claude Code** (terminal
 | Cowork | ❌ |
 | JetBrains extension | ❓ untested |
 
-Chat and Cowork don't use the Claude Code hook system. The VS Code and Cursor extensions hook into `~/.claude/settings.json` the same way the CLI does, so they work correctly here.
+Chat and Cowork don't use the Claude Code hook system. VS Code and Cursor hook into `~/.claude/settings.json` the same way the CLI does.
 
 ### Permissions
 
-The yellow dot only fires in the CLI. The desktop app handles permission prompts in-window and doesn't emit the notification hook, so you'll see the last active tool label instead. On auto/bypass mode this doesn't apply.
+The yellow dot only fires in the CLI. The desktop app handles permission prompts in-window and doesn't emit the notification hook.
 
 ## Requirements
 
@@ -47,9 +47,9 @@ The yellow dot only fires in the CLI. The desktop app handles permission prompts
 1. Download `ClaudeStatusBar.dmg` from [Releases](../../releases).
 2. Drag **Claude Status Bar** into Applications.
 3. Launch it once to wire the hooks automatically.
-4. Start a Claude Code session. The spark appears.
+4. Start a Claude Code session.
 
-Signed and notarized — no Gatekeeper prompt.
+Signed and notarized.
 
 ### Option B — Claude Code plugin
 
@@ -58,7 +58,7 @@ Signed and notarized — no Gatekeeper prompt.
 /plugin install claude-status-bar@claude-status-bar
 ```
 
-Installs the hooks but not the app. You still need to drag the app into Applications from the DMG first.
+Installs the hooks but not the app — drag it into Applications from the DMG first.
 
 ### Claude Code desktop app
 
@@ -66,9 +66,9 @@ The desktop app has its own menu bar icon. To avoid duplicates, go to **Settings
 
 ## How it works
 
-Claude Code hooks fire on lifecycle and tool events. Node.js scripts write current status to `~/.claude/statusbar/state.json`. The menu bar app polls that file and renders the icon and label. Each active session is tracked as a file under `~/.claude/statusbar/sessions.d/`. The app quits itself when no sessions remain.
+Claude Code hooks fire on lifecycle and tool events. Node.js scripts write the current status to `~/.claude/statusbar/state.json`. The menu bar app polls that file and renders the icon and label. Each active session is tracked as a file under `~/.claude/statusbar/sessions.d/`. The app quits itself when no sessions remain.
 
-The installer merges hooks into `~/.claude/settings.json` without modifying existing hooks, and backs the file up first as `settings.json.bak-statusbar`.
+The installer merges hooks into `~/.claude/settings.json` without modifying existing hooks, and backs the file up as `settings.json.bak-statusbar`.
 
 ## Uninstall
 
@@ -91,18 +91,18 @@ Requires Xcode Command Line Tools (`xcode-select --install`).
 
 ## Troubleshooting
 
-**Icon appeared then disappeared.** The app exits when no Claude session is active. It launches automatically when a session starts — don't open it manually.
+**Icon appeared then disappeared.** The app exits when no Claude session is active and launches automatically when one starts.
 
 **Nothing shows up.**
 - Start a fresh Claude Code session.
-- Check if the app is running: `pgrep -x ClaudeStatusBar`. No output means it exited because no session is active.
-- If the first-launch hook setup didn't run: `node "/Applications/ClaudeStatusBar.app/Contents/Resources/install.js"`
+- Check if the app is running: `pgrep -x ClaudeStatusBar`.
+- If hooks weren't set up on first launch: `node "/Applications/ClaudeStatusBar.app/Contents/Resources/install.js"`
 
-**Running but not visible.** Menu bar is full (notch Mac). Use Ice or Bartender to expose hidden items.
+**Running but not visible.** Menu bar is full. Use Ice or Bartender to expose hidden items.
 
 ## Not affiliated with Anthropic
 
-Unofficial fork of [m1ckc3s/claude-status-bar](https://github.com/m1ckc3s/claude-status-bar). Not affiliated with or endorsed by Anthropic. "Claude" is a trademark of Anthropic. Open an issue for any trademark concerns.
+Unofficial fork of [m1ckc3s/claude-status-bar](https://github.com/m1ckc3s/claude-status-bar). Not affiliated with Anthropic. "Claude" is a trademark of Anthropic.
 
 ## License
 
