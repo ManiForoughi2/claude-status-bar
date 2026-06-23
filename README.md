@@ -27,11 +27,14 @@ This is a **Claude Code** indicator, driven by Claude Code hooks. It tracks:
 |---|---|
 | Claude Code CLI (terminal) | ✅ |
 | Claude Code Desktop — **Code** tab | ✅ |
+| VS Code extension (incl. Cursor) | ✅ |
 | Claude Desktop — **Chat** tab | ❌ |
 | **Cowork** | ❌ |
-| IDE extensions (VS Code / JetBrains) | ❌ |
+| JetBrains extension | ❓ untested |
 
 Chat and Cowork don't use Claude Code's hook system, so the status bar won't update while you're in those. It reflects Claude **Code** activity only.
+
+The VS Code and Cursor extensions fire the same hooks as the CLI via `~/.claude/settings.json`, so the menu bar updates correctly when you're working inside your editor.
 
 ### Permission detection is CLI-only
 
@@ -92,7 +95,7 @@ Then drag the app to the Trash.
 ## Build from source
 
 ```bash
-git clone https://github.com/m1ckc3s/claude-status-bar
+git clone https://github.com/ManiForoughi2/claude-status-bar
 cd claude-status-bar
 ./build.sh            # builds build/ClaudeStatusBar.app
 ./build.sh --dmg      # also produces build/ClaudeStatusBar.dmg
@@ -115,9 +118,9 @@ Requires the Xcode Command Line Tools (`xcode-select --install`).
 
 ## Trademark / not affiliated
 
-This is an unofficial, open-source side project. **It is not affiliated with, endorsed by, or sponsored by Anthropic.** "Claude" and the Claude logo are trademarks of Anthropic.
+This is an unofficial, open-source side project forked from [m1ckc3s/claude-status-bar](https://github.com/m1ckc3s/claude-status-bar). **It is not affiliated with, endorsed by, or sponsored by Anthropic.** "Claude" and the Claude logo are trademarks of Anthropic.
 
-If I'm violating or impeding your trademark, please DM me on X ([@mickces](https://x.com/mickces)) and I'll rename this repo immediately. This is a free side project; I'm not monetizing it.
+If I'm violating or impeding your trademark, please open an issue or reach out and I'll address it immediately. This is a free side project; I'm not monetizing it.
 
 ## License
 
