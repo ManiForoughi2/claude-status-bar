@@ -23,7 +23,7 @@ Two animation styles: **Claude** (web morph spark) and **Claude Code** (terminal
 |---|---|
 | Claude Code CLI (terminal) | ✅ |
 | Claude Code Desktop — Code tab | ✅ |
-| VS Code / Cursor extension | ✅ |
+| **VS Code / Cursor extension** | ✅ *(confirmed in this fork)* |
 | Claude Desktop — Chat tab | ❌ |
 | Cowork | ❌ |
 | JetBrains extension | ❓ untested |
